@@ -1,5 +1,6 @@
 package com.example.diceroller;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -10,9 +11,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -67,35 +70,48 @@ public class MainActivity extends AppCompatActivity {
         //user input
 
         EditText Num1 = this.findViewById(R.id.InputNumb);
-        String Num_Check = Num1.getText().toString().trim();
-        if (Num_Check.isEmpty() || Num_Check == null) {
-            RandomNumber.setText("Please Enter a Number");
-        }
 
-        else{
-            //user number
-            TextView tv = this.findViewById(R.id.MyNumb);
-
-            Random R = new Random();
-            int Random = R.nextInt(7 - 1) + 1;
-            // RandomNumber.setText(""+Random);
+        try{
+            String Num_Check = Num1.getText().toString().trim();
             int Num2 = Integer.parseInt(Num1.getText().toString());
-            if (Num2 == Random) {
-                scoreBoard(view);
+
+
+            if (Num2 == 0 || Num2 >= 7) {
+                RandomNumber.setText("Please Enter a Valid Value");
+
+            } else {
+                //user number
+                TextView tv = this.findViewById(R.id.MyNumb);
+
+                Random R = new Random();
+                int Random = R.nextInt(7 - 1) + 1;
+                // RandomNumber.setText(""+Random);
+
+                if (Num2 == Random) {
+                    scoreBoard(view);
+
+                }
+                if (Num2 != Random) {
+
+                    notEqual(view);
+                }
+                String CompGen = String.valueOf(Random);
+                String Num3 = String.valueOf(Num2);
+                tv.setText("Computer's Number: \r" + CompGen);
+                RandomNumber.setText("Your Number: \r" + Num3);
+
 
             }
-            if(Num2 != Random){
-
-                notEqual(view);
-            }
-            String CompGen = String.valueOf(Random);
-            String Num3 = String.valueOf(Num2);
-            tv.setText("Computer's Number: \r" + CompGen);
-            RandomNumber.setText("Your Number: \r" + Num3);
-
-
+        }catch(Exception ex){
+            Log.e("Error!","Error!",ex);
 
         }
+
+
+
+
+
+
 
     }
 
@@ -105,10 +121,17 @@ public class MainActivity extends AppCompatActivity {
             scoreCard.setText("Your Score: " + count);
             TextView MessageBox = this.findViewById(R.id.Message);
             MessageBox.setText("Congratulations! You Guessed it Correct");
+            Button diceRollerBtn = this.findViewById(R.id.DiceBreaker);
+            diceRollerBtn.setVisibility(android.view.View.VISIBLE);
 
         }
         public void notEqual(View view){
             TextView MessageBox = this.findViewById(R.id.Message);
             MessageBox.setText("loser! You didnt Guess it Correct");
+        }
+        public void roll_the_dice(View view){
+            Intent myIntent = new Intent(MainActivity.this, MysteryQuestion.class);
+            startActivity(myIntent);
+
         }
     }
